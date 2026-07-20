@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrepStack — Interview Prep Planner</title>
+  <meta name="description" content="A personal interview-prep planner: structured roadmap, curated recall-grade notes, design drills, and an optional AI tutor." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <div id="modal-root"></div>
+
+  <button class="ps-ai-launcher" id="ai-launcher" title="Ask Claude">🤖</button>
+  <aside id="ai-panel"></aside>
+
+  <!-- App modules (order matters: event-bus -> profiles -> notes-repo -> claude) -->
+  <script src="event-bus.js"></script>
+  <script src="profiles.js"></script>
+  <script src="notes-repo.js"></script>
+  <script src="claude.js"></script>
+
+  <!-- Data registry, then content that self-registers into it -->
+  <script src="data/index.js"></script>
+
+  <script src="data/tracks/dsa.js"></script>
+  <script src="data/tracks/hld.js"></script>
+  <script src="data/tracks/lld.js"></script>
+  <script src="data/tracks/aiml.js"></script>
+  <script src="data/tracks/agents.js"></script>
+  <script src="data/tracks/algotrading.js"></script>
+
+  <script src="data/resources/dsa.js"></script>
+  <script src="data/resources/hld.js"></script>
+  <script src="data/resources/lld.js"></script>
+  <script src="data/resources/aiml.js"></script>
+  <script src="data/resources/agents.js"></script>
+  <script src="data/resources/algotrading.js"></script>
+
+  <script src="data/notes/hld/week0.js"></script>
+  <script src="data/notes/hld/week1.js"></script>
+  <script src="data/notes/hld/week2.js"></script>
+  <script src="data/notes/hld/week3.js"></script>
+  <script src="data/notes/lld/week0.js"></script>
+  <script src="data/notes/lld/week1.js"></script>
+
+  <!-- Controller (must load last). Bump ?v= on release to bust browser caches. -->
+  <script src="app.js?v=2"></script>
+
+  <script>
+    document.getElementById("ai-launcher").addEventListener("click", () => {
+      PrepStackAI.setPanelOpen(!PrepStackAI.isPanelOpen());
+    });
+  </script>
+</body>
+</html>

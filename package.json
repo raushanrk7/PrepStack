@@ -1,0 +1,17 @@
+{
+  "name": "prepstack",
+  "version": "1.0.0",
+  "description": "Personal interview-prep planner: roadmap + curated notes + AI tutor. Static frontend, zero build step.",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve public",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "license": "MIT"
+}
