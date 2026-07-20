@@ -55,15 +55,15 @@
   };
 
   const week5 = {
-    title: "Search, Storage & Observability",
+    title: "APIs, Auth & Advanced Patterns",
     days: [
-      D("Search & autocomplete (inverted index, tries)", "https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html"),
-      D("Object storage & blob systems (S3-like)", "https://github.com/donnemartin/system-design-primer#object-storage"),
-      D("Distributed file systems (GFS/HDFS concepts)", "https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf"),
-      D("Data partitioning at scale & hot keys", "https://github.com/binhnguyennus/awesome-scalability#partitioning"),
-      D("Monitoring & observability (metrics, logs, tracing)", "https://opentelemetry.io/docs/"),
-      D("Design: Search Autocomplete / Typeahead", "https://github.com/donnemartin/system-design-primer", "design"),
-      D("Design: File storage system (Dropbox/Drive)", "https://github.com/donnemartin/system-design-primer/tree/master/solutions/system_design/mint", "design")
+      D("API Gateway & BFF pattern", "https://microservices.io/patterns/apigateway.html"),
+      D("AuthN/AuthZ: sessions, JWT, OAuth", "https://jwt.io/introduction"),
+      D("Rate limiting algorithms (token bucket, sliding window)", "https://github.com/donnemartin/system-design-primer"),
+      D("Bloom filters & probabilistic data structures", "https://en.wikipedia.org/wiki/Bloom_filter"),
+      D("WebSocket vs SSE vs polling; DNS resolution", "https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API"),
+      D("Design: API Gateway with rate limiting", "https://microservices.io/patterns/apigateway.html", "design"),
+      D("Design: Saga pattern for distributed transactions", "https://microservices.io/patterns/data/saga.html", "design")
     ]
   };
 
