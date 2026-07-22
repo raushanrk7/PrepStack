@@ -516,3 +516,33 @@ html, body {
 .ps-pager-empty { display: flex; align-items: center; justify-content: center; border: 1px dashed var(--border, #2a2f45); color: var(--muted, #8a8fa3); font-size: 0.85rem; cursor: default; }
 .ps-pager-pos { align-self: center; font-size: 0.78rem; color: var(--muted, #8a8fa3); white-space: nowrap; }
 @media (max-width: 640px) { .ps-pager-nav { flex-direction: column; } .ps-pager-pos { order: -1; } }
+
+/* ---------- v3.3: practice solution (collapsible, scrollable code, video) ---------- */
+.ps-practice-body { padding: 6px 2px 2px; }
+.ps-sol { margin-top: 6px; border: 1px solid var(--border, #2a2f45); border-radius: 10px; overflow: hidden; }
+.ps-sol > summary {
+  cursor: pointer; padding: 9px 12px; font-weight: 600; font-size: 0.9rem;
+  background: color-mix(in srgb, var(--accent, #7c6cff) 10%, transparent);
+  list-style: none; user-select: none;
+}
+.ps-sol > summary::-webkit-details-marker { display: none; }
+.ps-sol[open] > summary { border-bottom: 1px solid var(--border, #2a2f45); }
+.ps-sol-body { padding: 10px 12px; }
+.ps-sol-code { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+.ps-sol-lang { flex: 1 1 320px; min-width: 0; }
+.ps-sol-lang-tag {
+  display: inline-block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted, #8a8fa3); margin-bottom: 4px;
+}
+.ps-sol-pre {
+  margin: 0; max-height: 340px; overflow: auto;               /* scrollable, capped height */
+  background: var(--code-bg, #0e1120); border: 1px solid var(--border, #2a2f45);
+  border-radius: 8px; padding: 12px; font-size: 0.82rem; line-height: 1.5;
+}
+.ps-sol-pre code { white-space: pre; font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
+.ps-sol-video {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+  padding: 7px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+  color: #fff; background: #c0392b; text-decoration: none;
+}
+.ps-sol-video:hover { background: #a93226; }

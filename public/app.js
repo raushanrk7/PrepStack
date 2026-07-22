@@ -343,11 +343,7 @@
         : `<div class="ps-empty">No Q&amp;A yet.</div>`;
     } else if (sub === "practice") {
       body = practice.length
-        ? `<div class="ps-qa-list">${practice.map((x, idx) => {
-            const q = typeof x === "string" ? x : x.q;
-            const a = typeof x === "string" ? "" : x.a;
-            return `<details class="ps-qa-item ps-practice ps-animate-in"><summary><span class="ps-practice-num">${idx + 1}</span>${escapeHtml(q)}</summary>${a ? `<div>${renderMarkdownish(a)}</div>` : ""}</details>`;
-          }).join("")}</div>`
+        ? `<div class="ps-qa-list">${practice.map((x, idx) => renderPracticeItem(x, idx)).join("")}</div>`
         : `<div class="ps-empty">No practice questions yet.</div>`;
     } else if (sub === "my-notes") {
       body = `
@@ -383,6 +379,34 @@
         <div class="ps-topic-body">${body}</div>
         ${renderTopicPagerNav(topic.id)}
       </div>`;
+  }
+
+  // One practice question: prompt + collapsible solution (scrollable code + optional video link).
+  function renderPracticeItem(x, idx) {
+    const q = typeof x === "string" ? x : x.q;
+    const a = typeof x === "string" ? "" : x.a;
+    const code = typeof x === "object" ? x.code : null;      // string, or [{lang,src}]
+    const video = typeof x === "object" ? x.video : null;    // {name, link} or url string
+    const langs = !code ? [] : (Array.isArray(code) ? code : [{ lang: "cpp", src: code }]);
+    const codeBlock = langs.length
+      ? `<div class="ps-sol-code">${langs.map((c) => `
+          <div class="ps-sol-lang">
+            <span class="ps-sol-lang-tag">${escapeHtml(c.lang || "code")}</span>
+            <pre class="ps-sol-pre"><code>${escapeHtml(c.src || "")}</code></pre>
+          </div>`).join("")}</div>`
+      : "";
+    const videoLink = video
+      ? `<a class="ps-sol-video" href="${escapeHtml(typeof video === "string" ? video : video.link)}" target="_blank" rel="noopener">▶ ${escapeHtml(typeof video === "string" ? "Watch walkthrough" : (video.name || "Watch walkthrough"))}</a>`
+      : "";
+    const solution = (a || codeBlock || videoLink)
+      ? `<details class="ps-sol"><summary>💡 Solution</summary>
+           <div class="ps-sol-body">${a ? renderMarkdownish(a) : ""}${codeBlock}${videoLink}</div>
+         </details>`
+      : "";
+    return `<details class="ps-qa-item ps-practice ps-animate-in" style="--i:${idx}">
+        <summary><span class="ps-practice-num">${idx + 1}</span>${escapeHtml(q)}</summary>
+        <div class="ps-practice-body">${solution || `<div class="ps-empty">Try it yourself first — solution coming soon.</div>`}</div>
+      </details>`;
   }
 
   // Prev/next topic navigation (flattened across modules, in roadmap order).

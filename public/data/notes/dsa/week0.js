@@ -82,9 +82,83 @@ Rule: window answers "longest/shortest contiguous run satisfying a condition" �
       { q: "Check if two strings are anagrams — optimal?", a: "26-int count array (or hashmap for unicode): increment for one string, decrement for the other, all zeros = anagram. O(n) time, O(1) space; beats sorting's O(n log n)." }
     ],
     mock: { easy: [], medium: [
-      { q: "Trapping Rain Water — derive the two-pointer solution.", a: "Water at i = min(maxLeft, maxRight) - h[i]. Two pointers with running maxes: whichever side's max is smaller is the binding constraint, so process and advance that side. O(n) time, O(1) space vs the prefix-array O(n)-space version." },
-      { q: "Minimum Window Substring — outline the algorithm.", a: "Need-count hashmap of t; expand r consuming needs, track 'missing'; when missing==0 contract l while window stays valid, recording the best. Each pointer moves ≤ n. O(|s|+|t|). Classic variable window with a satisfaction counter." },
-      { q: "Product of Array Except Self, no division, O(1) extra space.", a: "Output array = prefix products left-to-right; second pass right-to-left multiplies a running suffix product into each slot. Two passes, O(n), output array doesn't count as extra space." }
+      {
+        q: "Trapping Rain Water — derive the two-pointer solution.",
+        a: "Water at i = min(maxLeft, maxRight) - h[i]. Two pointers with running maxes: whichever side's max is smaller is the binding constraint, so process and advance that side. **O(n) time, O(1) space** vs the prefix-array O(n)-space version.",
+        code: [
+          { lang: "cpp", src:
+`int trap(vector<int>& h) {
+    int l = 0, r = h.size() - 1, lMax = 0, rMax = 0, water = 0;
+    while (l < r) {
+        if (h[l] < h[r]) {              // left is the binding side
+            lMax = max(lMax, h[l]);
+            water += lMax - h[l];
+            l++;
+        } else {
+            rMax = max(rMax, h[r]);
+            water += rMax - h[r];
+            r--;
+        }
+    }
+    return water;
+}` },
+          { lang: "java", src:
+`int trap(int[] h) {
+    int l = 0, r = h.length - 1, lMax = 0, rMax = 0, water = 0;
+    while (l < r) {
+        if (h[l] < h[r]) {
+            lMax = Math.max(lMax, h[l]);
+            water += lMax - h[l];
+            l++;
+        } else {
+            rMax = Math.max(rMax, h[r]);
+            water += rMax - h[r];
+            r--;
+        }
+    }
+    return water;
+}` }
+        ],
+        video: { name: "NeetCode — Trapping Rain Water", link: "https://www.youtube.com/watch?v=ZI2z5pq0TqA" }
+      },
+      {
+        q: "Minimum Window Substring — outline the algorithm.",
+        a: "Need-count hashmap of t; expand r consuming needs, track 'missing'; when missing==0 contract l while window stays valid, recording the best. Each pointer moves ≤ n. **O(|s|+|t|)**. Classic variable window with a satisfaction counter.",
+        code: [
+          { lang: "cpp", src:
+`string minWindow(string s, string t) {
+    unordered_map<char,int> need;
+    for (char c : t) need[c]++;
+    int missing = t.size(), l = 0, start = 0, best = INT_MAX;
+    for (int r = 0; r < (int)s.size(); r++) {
+        if (need[s[r]]-- > 0) missing--;         // consumed a needed char
+        while (missing == 0) {                   // window valid — try shrinking
+            if (r - l + 1 < best) { best = r - l + 1; start = l; }
+            if (++need[s[l]] > 0) missing++;      // l char becomes needed again
+            l++;
+        }
+    }
+    return best == INT_MAX ? "" : s.substr(start, best);
+}` }
+        ],
+        video: { name: "NeetCode — Minimum Window Substring", link: "https://www.youtube.com/watch?v=jSto0O4LJbs" }
+      },
+      {
+        q: "Product of Array Except Self, no division, O(1) extra space.",
+        a: "Output array = prefix products left-to-right; second pass right-to-left multiplies a running suffix product into each slot. Two passes, **O(n)**, output array doesn't count as extra space.",
+        code: [
+          { lang: "cpp", src:
+`vector<int> productExceptSelf(vector<int>& a) {
+    int n = a.size();
+    vector<int> res(n, 1);
+    for (int i = 1; i < n; i++) res[i] = res[i-1] * a[i-1];  // prefix
+    int suf = 1;
+    for (int i = n - 1; i >= 0; i--) { res[i] *= suf; suf *= a[i]; }
+    return res;
+}` }
+        ],
+        video: { name: "NeetCode — Product of Array Except Self", link: "https://www.youtube.com/watch?v=bNvIQI2wAjk" }
+      }
     ], hard: [] }
   });
 })();
