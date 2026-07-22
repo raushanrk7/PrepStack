@@ -108,6 +108,8 @@
     let t = escapeHtml(text);
     t = t.replace(/`([^`]+)`/g, "<code>$1</code>");
     t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    t = t.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");          // italic *x*
+    t = t.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>'); // [text](url)
     return t;
   }
   function renderMarkdownish(src) {
@@ -115,8 +117,8 @@
     const lines = String(src).replace(/\r\n/g, "\n").split("\n");
     let html = "";
     let i = 0;
-    let inList = false;
-    const closeList = () => { if (inList) { html += "</ul>"; inList = false; } };
+    let listType = null; // "ul" | "ol"
+    const closeList = () => { if (listType) { html += `</${listType}>`; listType = null; } };
     const isSepRow = (l) => /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(l || "");
     const splitRow = (l) => {
       const cells = l.split("|").map((c) => c.trim());
@@ -156,9 +158,12 @@
         continue;
       }
       const bMatch = line.match(/^\s*-\s+(.*)$/);
-      if (bMatch) {
-        if (!inList) { html += '<ul class="md-list">'; inList = true; }
-        html += `<li>${inlineMd(bMatch[1])}</li>`;
+      const oMatch = line.match(/^\s*\d+\.\s+(.*)$/);
+      if (bMatch || oMatch) {
+        const want = bMatch ? "ul" : "ol";
+        if (listType && listType !== want) closeList();
+        if (!listType) { html += `<${want} class="md-list">`; listType = want; }
+        html += `<li>${inlineMd((bMatch || oMatch)[1])}</li>`;
         i++;
         continue;
       }

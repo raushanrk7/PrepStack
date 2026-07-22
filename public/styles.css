@@ -388,7 +388,7 @@ html, body {
   .ps-header-controls { width: 100%; justify-content: flex-start; }
 }
 
-.ps-hint { font-size: 0.8rem; color: var(--muted, #888); margin: -0.4rem 0 0.6rem; }
+.ps-hint { font-size: 0.8rem; color: var(--text-muted); margin: -0.4rem 0 0.6rem; }
 .ps-field select { width: 100%; padding: 0.5rem; border-radius: 6px; }
 
 /* ============ v3: topic-centric UI + animations ============ */
@@ -488,33 +488,33 @@ html, body {
 .ps-resource-group { margin-bottom: 22px; }
 .ps-resource-group-title {
   font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--muted, #8a8fa3); margin: 0 0 10px 2px;
+  color: var(--text-muted); margin: 0 0 10px 2px;
 }
 .ps-resource-card { align-items: flex-start; }
 .ps-resource-main { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
 .ps-resource-desc {
-  font-size: 0.8rem; line-height: 1.4; color: var(--muted, #8a8fa3); font-weight: 400;
+  font-size: 0.8rem; line-height: 1.4; color: var(--text-muted); font-weight: 400;
 }
 
 /* ---------- v3.2: prev/next topic pager ---------- */
 .ps-pager-nav {
   display: flex; align-items: stretch; gap: 12px; margin-top: 28px;
-  padding-top: 18px; border-top: 1px solid var(--border, #2a2f45);
+  padding-top: 18px; border-top: 1px solid var(--border);
 }
 .ps-pager {
   flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0;
-  padding: 12px 14px; border: 1px solid var(--border, #2a2f45); border-radius: 12px;
-  background: var(--card, transparent); cursor: pointer; text-align: left;
+  padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface); cursor: pointer; text-align: left;
   font: inherit; color: inherit;
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
-.ps-pager:hover { transform: translateY(-2px); border-color: var(--accent, #7c6cff); }
+.ps-pager:hover { transform: translateY(-2px); border-color: var(--accent); }
 .ps-pager-next { text-align: right; align-items: flex-end; }
-.ps-pager-dir { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent, #7c6cff); }
+.ps-pager-dir { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent); }
 .ps-pager-title { font-weight: 600; font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
-.ps-pager-mod { font-size: 0.75rem; color: var(--muted, #8a8fa3); }
-.ps-pager-empty { display: flex; align-items: center; justify-content: center; border: 1px dashed var(--border, #2a2f45); color: var(--muted, #8a8fa3); font-size: 0.85rem; cursor: default; }
-.ps-pager-pos { align-self: center; font-size: 0.78rem; color: var(--muted, #8a8fa3); white-space: nowrap; }
+.ps-pager-mod { font-size: 0.75rem; color: var(--text-muted); }
+.ps-pager-empty { display: flex; align-items: center; justify-content: center; border: 1px dashed var(--border); color: var(--text-muted); font-size: 0.85rem; cursor: default; }
+.ps-pager-pos { align-self: center; font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; }
 @media (max-width: 640px) { .ps-pager-nav { flex-direction: column; } .ps-pager-pos { order: -1; } }
 
 /* ---------- v3.4: practice solution — Approach / Solution / References ---------- */
@@ -522,56 +522,56 @@ html, body {
 .ps-practice-q { flex: 1; min-width: 0; }
 .ps-practice-body { padding: 10px 2px 4px; }
 
-.ps-sol { margin-top: 4px; border: 1px solid var(--border, #2a2f45); border-radius: 12px; overflow: hidden; }
+.ps-sol { margin-top: 4px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
 .ps-sol > summary {
   cursor: pointer; padding: 11px 14px; font-weight: 600; font-size: 0.9rem;
-  background: color-mix(in srgb, var(--accent, #7c6cff) 12%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
   list-style: none; user-select: none; transition: background 0.15s ease;
 }
-.ps-sol > summary:hover { background: color-mix(in srgb, var(--accent, #7c6cff) 18%, transparent); }
+.ps-sol > summary:hover { background: color-mix(in srgb, var(--accent) 18%, transparent); }
 .ps-sol > summary::-webkit-details-marker { display: none; }
 .ps-sol[open] > summary .ps-sol-toggle-label::before { content: "🔽 "; }
 .ps-sol:not([open]) > summary .ps-sol-toggle-label::before { content: "▶️ "; }
-.ps-sol[open] > summary { border-bottom: 1px solid var(--border, #2a2f45); }
+.ps-sol[open] > summary { border-bottom: 1px solid var(--border); }
 .ps-sol-body { padding: 4px 0 0; }
 
 /* labeled sections */
-.ps-sol-section { padding: 14px; border-bottom: 1px solid color-mix(in srgb, var(--border, #2a2f45) 60%, transparent); }
+.ps-sol-section { padding: 14px; border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
 .ps-sol-section:last-child { border-bottom: 0; }
 .ps-sol-head {
   font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em;
-  color: var(--accent, #7c6cff); margin-bottom: 8px;
+  color: var(--accent); margin-bottom: 8px;
 }
 .ps-sol-content { font-size: 0.9rem; line-height: 1.6; }
 .ps-sol-content p:first-child { margin-top: 0; }
 .ps-sol-content p:last-child { margin-bottom: 0; }
 
 /* code with language tabs + copy */
-.ps-sol-code { border: 1px solid var(--border, #2a2f45); border-radius: 10px; overflow: hidden; }
+.ps-sol-code { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 .ps-sol-tabs {
   display: flex; align-items: center; gap: 4px; padding: 6px 8px;
-  background: color-mix(in srgb, var(--border, #2a2f45) 35%, transparent);
-  border-bottom: 1px solid var(--border, #2a2f45);
+  background: color-mix(in srgb, var(--border) 35%, transparent);
+  border-bottom: 1px solid var(--border);
 }
 .ps-sol-tab {
   font: inherit; font-size: 0.78rem; font-weight: 600; cursor: pointer;
   padding: 5px 12px; border-radius: 7px; border: 1px solid transparent;
-  background: transparent; color: var(--muted, #8a8fa3); transition: all 0.14s ease;
+  background: transparent; color: var(--text-muted); transition: all 0.14s ease;
 }
-.ps-sol-tab:hover { color: var(--fg, #e6e8f0); }
+.ps-sol-tab:hover { color: var(--text); }
 .ps-sol-tab.active {
-  background: var(--card, #1a1e30); color: var(--fg, #e6e8f0);
-  border-color: var(--border, #2a2f45);
+  background: var(--surface); color: var(--text);
+  border-color: var(--border);
 }
 .ps-sol-copy {
   margin-left: auto; font: inherit; font-size: 0.75rem; cursor: pointer;
-  padding: 5px 10px; border-radius: 7px; border: 1px solid var(--border, #2a2f45);
-  background: transparent; color: var(--muted, #8a8fa3); transition: all 0.14s ease;
+  padding: 5px 10px; border-radius: 7px; border: 1px solid var(--border);
+  background: transparent; color: var(--text-muted); transition: all 0.14s ease;
 }
-.ps-sol-copy:hover { color: var(--fg, #e6e8f0); border-color: var(--accent, #7c6cff); }
+.ps-sol-copy:hover { color: var(--text); border-color: var(--accent); }
 .ps-sol-panel {
   display: none; margin: 0; max-height: 420px; overflow: auto;   /* scrollable, capped */
-  background: var(--code-bg, #0e1120); padding: 14px 16px;
+  background: var(--surface-alt); padding: 14px 16px;
   font-size: 0.82rem; line-height: 1.6; tab-size: 4;
 }
 .ps-sol-panel.active { display: block; }
@@ -579,17 +579,17 @@ html, body {
   white-space: pre; font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
 }
 .ps-sol-panel::-webkit-scrollbar { height: 9px; width: 9px; }
-.ps-sol-panel::-webkit-scrollbar-thumb { background: var(--border, #2a2f45); border-radius: 6px; }
+.ps-sol-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
 
 /* references */
 .ps-sol-refs { display: flex; flex-wrap: wrap; gap: 8px; }
 .ps-sol-ref {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 7px 13px; border-radius: 8px; font-size: 0.84rem; font-weight: 600;
-  text-decoration: none; border: 1px solid var(--border, #2a2f45); color: var(--fg, #e6e8f0);
+  text-decoration: none; border: 1px solid var(--border); color: var(--text);
   transition: transform 0.14s ease, border-color 0.14s ease;
 }
-.ps-sol-ref:hover { transform: translateY(-1px); border-color: var(--accent, #7c6cff); }
+.ps-sol-ref:hover { transform: translateY(-1px); border-color: var(--accent); }
 .ps-sol-ref.vid { color: #fff; background: #c0392b; border-color: #c0392b; }
 .ps-sol-ref.vid:hover { background: #a93226; }
 
@@ -599,3 +599,11 @@ html, body {
   .ps-sol-refs { flex-direction: column; }
   .ps-sol-ref { justify-content: center; }
 }
+
+/* ---------- v3.5: markdown ordered lists, italics, inline links ---------- */
+ol.md-list { margin: 8px 0; padding-left: 1.4em; }
+ol.md-list li { margin: 4px 0; line-height: 1.6; }
+.md-h + ul.md-list, .md-h + ol.md-list { margin-top: 6px; }
+.ps-concepts em, .ps-sol-content em, .md-table em { font-style: italic; opacity: 0.95; }
+.ps-concepts a, .ps-sol-content a, .md-table a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.ps-concepts a:hover, .ps-sol-content a:hover { text-decoration: none; }
