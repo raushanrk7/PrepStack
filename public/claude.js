@@ -62,8 +62,8 @@
 
   // Which provider to use for this request. Honors the saved choice when its key
   // is available on the proxy; otherwise falls back to the first available provider.
-  // Browser-callable providers (OpenAI blocks CORS — proxy only).
-  const DIRECT_OK = ["anthropic", "gemini", "groq"];
+  // Browser-callable providers with a personal key.
+  const DIRECT_OK = ["anthropic", "gemini", "groq", "openai"];
 
   // A personal key always wins: usage stays on the user's own quota, key never leaves the browser.
   function usingOwnKey() {
@@ -94,8 +94,7 @@
       .join(" ");
   }
 
-  // Browser-direct call (no proxy). Used when the user pasted their own key in Settings.
-  // Note: OpenAI blocks browser-origin calls (CORS) — use the proxy for ChatGPT.
+  // Browser-direct call with the user's own key (never sent to the PrepStack server).
   async function callDirect(provider, apiKey, payload) {
     if (!apiKey) throw new Error("No API key set. Add one in Settings, or deploy with a server key.");
 
@@ -131,12 +130,13 @@
       return (data.candidates?.[0]?.content?.parts || []).map((p) => p.text).join("\n");
     }
 
-    // Groq (OpenAI-compatible, allows browser origins).
-    if (provider === "groq") {
+    // OpenAI-compatible chat/completions (Groq and OpenAI both allow browser origins).
+    if (provider === "groq" || provider === "openai") {
+      const base = provider === "groq" ? "https://api.groq.com/openai/v1" : "https://api.openai.com/v1";
       const chat = [];
       if (payload.system) chat.push({ role: "system", content: payload.system });
       payload.messages.forEach((m) => chat.push({ role: m.role, content: m.content }));
-      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      const res = await fetch(base + "/chat/completions", {
         method: "POST",
         headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
         body: JSON.stringify({ model: payload.model, messages: chat, max_tokens: payload.max_tokens })
@@ -146,7 +146,7 @@
       return data.choices?.[0]?.message?.content || "";
     }
 
-    throw new Error(`${PROVIDER_LABELS[provider] || provider} needs the server proxy (browser calls are blocked). Deploy with the key set on the server.`);
+    throw new Error(`${PROVIDER_LABELS[provider] || provider} needs the server proxy. Deploy with the key set on the server.`);
   }
 
   async function send(text) {

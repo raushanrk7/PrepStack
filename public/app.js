@@ -511,14 +511,14 @@
             const opts = providers.map((p) => `<option value="${p}" ${p === active ? "selected" : ""}>${escapeHtml(labels[p] || p)}</option>`).join("");
             const note = PrepStackAI.getMode() === "proxy"
               ? "Providers with a key configured on the server."
-              : "Providers you can call directly from the browser (ChatGPT needs the server proxy).";
+              : "All providers can be called directly from the browser with your own key.";
             return `
           <label class="ps-field">Provider
             <select data-action="set-provider">${opts}</select>
           </label>
           <p class="ps-hint">${note}</p>
           <label class="ps-field">Your own API key (optional)
-            <input type="password" data-action="set-api-key" value="${escapeHtml(settings.apiKey || "")}" placeholder="AIza… (Gemini) / gsk_… (Groq) / sk-ant-…" />
+            <input type="password" data-action="set-api-key" value="${escapeHtml(settings.apiKey || "")}" placeholder="AIza… (Gemini) / gsk_… (Groq) / sk-… (OpenAI) / sk-ant-…" />
           </label>
           <p class="ps-hint">🔒 Stored only in <b>this browser, this profile</b> (localStorage). It is never sent to the PrepStack server or anyone else — calls go straight from your browser to the provider. Get a free Gemini key at aistudio.google.com.</p>
           <label class="ps-field">Model
