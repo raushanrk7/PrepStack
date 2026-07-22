@@ -495,3 +495,24 @@ html, body {
 .ps-resource-desc {
   font-size: 0.8rem; line-height: 1.4; color: var(--muted, #8a8fa3); font-weight: 400;
 }
+
+/* ---------- v3.2: prev/next topic pager ---------- */
+.ps-pager-nav {
+  display: flex; align-items: stretch; gap: 12px; margin-top: 28px;
+  padding-top: 18px; border-top: 1px solid var(--border, #2a2f45);
+}
+.ps-pager {
+  flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0;
+  padding: 12px 14px; border: 1px solid var(--border, #2a2f45); border-radius: 12px;
+  background: var(--card, transparent); cursor: pointer; text-align: left;
+  font: inherit; color: inherit;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.ps-pager:hover { transform: translateY(-2px); border-color: var(--accent, #7c6cff); }
+.ps-pager-next { text-align: right; align-items: flex-end; }
+.ps-pager-dir { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent, #7c6cff); }
+.ps-pager-title { font-weight: 600; font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.ps-pager-mod { font-size: 0.75rem; color: var(--muted, #8a8fa3); }
+.ps-pager-empty { display: flex; align-items: center; justify-content: center; border: 1px dashed var(--border, #2a2f45); color: var(--muted, #8a8fa3); font-size: 0.85rem; cursor: default; }
+.ps-pager-pos { align-self: center; font-size: 0.78rem; color: var(--muted, #8a8fa3); white-space: nowrap; }
+@media (max-width: 640px) { .ps-pager-nav { flex-direction: column; } .ps-pager-pos { order: -1; } }

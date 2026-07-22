@@ -381,7 +381,26 @@
           .map((t) => `<button class="ps-subtab ${sub === t.id ? "active" : ""}" data-action="change-topic-subtab" data-subtab="${t.id}">${t.label}</button>`)
           .join("")}</nav>
         <div class="ps-topic-body">${body}</div>
+        ${renderTopicPagerNav(topic.id)}
       </div>`;
+  }
+
+  // Prev/next topic navigation (flattened across modules, in roadmap order).
+  function renderTopicPagerNav(topicId) {
+    const flat = [];
+    (model()?.modules || []).forEach((mod) => mod.topics.forEach((t) => flat.push({ mod, t })));
+    const idx = flat.findIndex((x) => x.t.id === topicId);
+    if (idx === -1) return "";
+    const prev = flat[idx - 1];
+    const next = flat[idx + 1];
+    const cell = (item, dir) => item
+      ? `<button class="ps-pager ps-pager-${dir}" data-action="open-topic" data-topic="${item.t.id}">
+           <span class="ps-pager-dir">${dir === "prev" ? "← Previous" : "Next →"}</span>
+           <span class="ps-pager-title">${escapeHtml(item.t.title)}</span>
+           <span class="ps-pager-mod">${escapeHtml(item.mod.title)}</span>
+         </button>`
+      : `<span class="ps-pager ps-pager-empty">${dir === "prev" ? "Start of track" : "🎉 End of track"}</span>`;
+    return `<nav class="ps-pager-nav ps-animate-in">${cell(prev, "prev")}<span class="ps-pager-pos">${idx + 1} / ${flat.length}</span>${cell(next, "next")}</nav>`;
   }
 
   // ---------- my notes ----------
@@ -592,6 +611,7 @@
         state.selectedTopicId = el.dataset.topic;
         state.topicSubTab = "concepts";
         state.activeTab = "roadmap";
+        window.scrollTo({ top: 0 });
         progress.lastTopic = progress.lastTopic || {};
         progress.lastTopic[state.trackKey] = el.dataset.topic;
         saveProgress();
