@@ -3,6 +3,7 @@
 (function () {
   const STATE_SUFFIX = "ui-state:v2";
   const PROGRESS_SUFFIX = "progress:v2";
+  const USER_RES_SUFFIX = "user-resources:v1";
   const KIND_ICON = {
     video: "▶", article: "📄", book: "📚", paper: "📑", course: "🎓",
     practice: "🧪", platform: "⚙️", tool: "🔧", github: "💻", docs: "📘", roadmap: "🗺️"
@@ -42,6 +43,34 @@
   }
   function saveProgress() {
     localStorage.setItem(Profiles.key(PROGRESS_SUFFIX), JSON.stringify(progress));
+  }
+
+  // ---------- user's own saved links (per profile, per track) ----------
+  function readUserResources() {
+    try { return JSON.parse(localStorage.getItem(Profiles.key(USER_RES_SUFFIX))) || {}; }
+    catch { return {}; }
+  }
+  function writeUserResources(all) {
+    localStorage.setItem(Profiles.key(USER_RES_SUFFIX), JSON.stringify(all));
+  }
+  function userResources(trackKey) {
+    return readUserResources()[trackKey] || [];
+  }
+  function addUserResource(trackKey, { name, link }) {
+    let url = String(link || "").trim();
+    if (!url) return { ok: false, msg: "Add a URL." };
+    if (!/^https?:\/\//i.test(url)) url = "https://" + url;   // tolerate pasted bare domains
+    try { new URL(url); } catch { return { ok: false, msg: "That doesn't look like a valid URL." }; }
+    const all = readUserResources();
+    const list = all[trackKey] || (all[trackKey] = []);
+    if (list.some((r) => r.link === url)) return { ok: false, msg: "You already saved that link." };
+    list.unshift({ id: "u_" + Date.now().toString(36), name: (name || "").trim() || url, link: url, addedAt: Date.now() });
+    writeUserResources(all);
+    return { ok: true };
+  }
+  function removeUserResource(trackKey, id) {
+    const all = readUserResources();
+    if (all[trackKey]) { all[trackKey] = all[trackKey].filter((r) => r.id !== id); writeUserResources(all); }
   }
 
   // ---------- progress (topic-based) ----------
@@ -499,15 +528,6 @@
   }
 
   function renderResourcesTab() {
-    const list = (RESOURCES[state.trackKey] || []).slice();
-    if (list.length === 0) return `<div class="ps-empty">No track-level resources yet. Check each topic's Resources tab.</div>`;
-    // Group by category; uncategorized items go under "General".
-    const groups = new Map();
-    list.forEach((r) => {
-      const cat = r.category || "General";
-      if (!groups.has(cat)) groups.set(cat, []);
-      groups.get(cat).push(r);
-    });
     const card = (r, i) => `
       <a class="ps-resource-card kind-${r.type || r.kind} ps-animate-in" style="--i:${i}" href="${escapeHtml(r.link || r.url)}" target="_blank" rel="noopener">
         <span class="ps-resource-icon">${KIND_ICON[r.type || r.kind] || "🔗"}</span>
@@ -517,13 +537,48 @@
         </span>
         <span class="ps-resource-kind">${escapeHtml(r.by || r.type || r.kind || "")}</span>
       </a>`;
-    return [...groups.entries()]
+
+    // --- My Links: user's own saved links for this track (browser-local, per profile) ---
+    const mine = userResources(state.trackKey);
+    const err = state.userResError;
+    const myLinks = `
+      <section class="ps-resource-group ps-mylinks">
+        <h3 class="ps-resource-group-title">⭐ My Links <span class="ps-mylinks-hint">saved in this browser</span></h3>
+        <form class="ps-mylinks-form" data-action="add-user-resource">
+          <input type="text" id="ur-name" placeholder="Label (optional)" autocomplete="off" />
+          <input type="text" id="ur-link" placeholder="Paste a URL…" autocomplete="off" />
+          <button class="ps-btn ps-btn-primary" type="submit">＋ Save</button>
+        </form>
+        ${err ? `<p class="ps-mylinks-err">${escapeHtml(err)}</p>` : ""}
+        ${mine.length ? `<div class="ps-resources">${mine.map((r) => `
+          <div class="ps-resource-card ps-mylink ps-animate-in">
+            <span class="ps-resource-icon">🔖</span>
+            <a class="ps-resource-main" href="${escapeHtml(r.link)}" target="_blank" rel="noopener">
+              <span class="ps-resource-title">${escapeHtml(r.name)}</span>
+              <span class="ps-resource-desc">${escapeHtml(r.link)}</span>
+            </a>
+            <button class="ps-icon-btn ps-mylink-del" data-action="remove-user-resource" data-id="${r.id}" title="Remove">🗑️</button>
+          </div>`).join("")}</div>`
+          : `<p class="ps-mylinks-empty">No saved links yet — paste anything useful (a blog post, a video, your own notes doc). Included in your backup export.</p>`}
+      </section>`;
+
+    // --- Curated track resources, grouped by category ---
+    const list = (RESOURCES[state.trackKey] || []).slice();
+    const groups = new Map();
+    list.forEach((r) => {
+      const cat = r.category || "General";
+      if (!groups.has(cat)) groups.set(cat, []);
+      groups.get(cat).push(r);
+    });
+    const curated = [...groups.entries()]
       .map(([cat, items]) => `
         <section class="ps-resource-group">
           <h3 class="ps-resource-group-title">${escapeHtml(cat)}</h3>
           <div class="ps-resources">${items.map(card).join("")}</div>
         </section>`)
-      .join("");
+      .join("") || `<div class="ps-empty">No curated resources yet — check each topic's Resources tab.</div>`;
+
+    return myLinks + curated;
   }
 
   // ---------- modals ----------
@@ -686,6 +741,10 @@
         state.topicSubTab = el.dataset.subtab;
         render();
         break;
+      case "remove-user-resource":
+        removeUserResource(state.trackKey, el.dataset.id);
+        render();
+        break;
       case "switch-code-lang": {
         // Client-side tab switch — no re-render, keeps solution scroll position.
         e.preventDefault();
@@ -832,6 +891,13 @@
       if (!text) return;
       input.value = "";
       PrepStackAI.send(text);
+    } else if (el.dataset.action === "add-user-resource") {
+      e.preventDefault();
+      const name = document.getElementById("ur-name")?.value || "";
+      const link = document.getElementById("ur-link")?.value || "";
+      const res = addUserResource(state.trackKey, { name, link });
+      state.userResError = res.ok ? null : res.msg;
+      render();
     }
   }
 
@@ -865,7 +931,7 @@
 
   async function exportNotes() {
     const notes = await NotesRepo.exportAll();
-    const all = { exportedAt: new Date().toISOString(), notes, progress };
+    const all = { exportedAt: new Date().toISOString(), notes, progress, userResources: readUserResources() };
     const blob = new Blob([JSON.stringify(all, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
