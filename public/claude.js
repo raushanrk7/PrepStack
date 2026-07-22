@@ -65,9 +65,10 @@
   function activeProvider() {
     const saved = readSettings().provider;
     if (mode === "proxy" && proxyProviders.length) {
-      return proxyProviders.includes(saved) ? saved : proxyProviders[0];
+      if (proxyProviders.includes(saved)) return saved;
+      return proxyProviders.includes("gemini") ? "gemini" : proxyProviders[0];
     }
-    return saved || "anthropic";
+    return saved || "gemini";
   }
 
   function buildSystemPrompt() {
@@ -144,7 +145,7 @@
 
     const settings = readSettings();
     const provider = activeProvider();
-    const model = settings.model || DEFAULT_MODELS[provider] || DEFAULT_MODELS.anthropic;
+    const model = settings.model || DEFAULT_MODELS[provider] || DEFAULT_MODELS.gemini;
     const payload = {
       provider,
       model,

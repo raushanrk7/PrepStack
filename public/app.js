@@ -517,9 +517,10 @@
             <select data-action="set-provider">${opts}</select>
           </label>
           <p class="ps-hint">${note}</p>
-          <label class="ps-field">API key (used only if no server proxy is available)
-            <input type="password" data-action="set-api-key" value="${escapeHtml(settings.apiKey || "")}" placeholder="sk-… / AIza… / gsk_…" />
+          <label class="ps-field">Your own API key (optional)
+            <input type="password" data-action="set-api-key" value="${escapeHtml(settings.apiKey || "")}" placeholder="AIza… (Gemini) / gsk_… (Groq) / sk-ant-…" />
           </label>
+          <p class="ps-hint">🔒 Stored only in <b>this browser, this profile</b> (localStorage). It is never sent to the PrepStack server or anyone else — calls go straight from your browser to the provider. Get a free Gemini key at aistudio.google.com.</p>
           <label class="ps-field">Model
             <input type="text" data-action="set-model" value="${escapeHtml(settings.model || defaults[active] || "")}" placeholder="${escapeHtml(defaults[active] || "")}" />
           </label>`;
