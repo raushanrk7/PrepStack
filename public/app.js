@@ -381,31 +381,51 @@
       </div>`;
   }
 
-  // One practice question: prompt + collapsible solution (scrollable code + optional video link).
+  const LANG_LABEL = { cpp: "C++", java: "Java", python: "Python", py: "Python", js: "JavaScript", go: "Go" };
+
+  // One practice question → collapsible card with labeled Approach / Solution / References sections.
   function renderPracticeItem(x, idx) {
     const q = typeof x === "string" ? x : x.q;
-    const a = typeof x === "string" ? "" : x.a;
+    const approach = typeof x === "string" ? "" : (x.approach || x.a || "");
     const code = typeof x === "object" ? x.code : null;      // string, or [{lang,src}]
-    const video = typeof x === "object" ? x.video : null;    // {name, link} or url string
+    const refs = typeof x === "object" ? (x.refs || (x.video ? [x.video] : [])) : []; // [{name,link}] or [url]
     const langs = !code ? [] : (Array.isArray(code) ? code : [{ lang: "cpp", src: code }]);
+
+    const section = (icon, label, inner) =>
+      `<div class="ps-sol-section"><div class="ps-sol-head">${icon} ${label}</div><div class="ps-sol-content">${inner}</div></div>`;
+
+    const approachBlock = approach ? section("🎯", "Approach", renderMarkdownish(approach)) : "";
+
     const codeBlock = langs.length
-      ? `<div class="ps-sol-code">${langs.map((c) => `
-          <div class="ps-sol-lang">
-            <span class="ps-sol-lang-tag">${escapeHtml(c.lang || "code")}</span>
-            <pre class="ps-sol-pre"><code>${escapeHtml(c.src || "")}</code></pre>
-          </div>`).join("")}</div>`
+      ? section("💻", "Solution", `
+          <div class="ps-sol-code">
+            <div class="ps-sol-tabs">
+              ${langs.map((c, i) => `<button class="ps-sol-tab ${i === 0 ? "active" : ""}" data-action="switch-code-lang" data-lang="${escapeHtml(c.lang || "code")}">${escapeHtml(LANG_LABEL[c.lang] || c.lang || "Code")}</button>`).join("")}
+              <button class="ps-sol-copy" data-action="copy-code" title="Copy code">📋 Copy</button>
+            </div>
+            ${langs.map((c, i) => `<pre class="ps-sol-panel ${i === 0 ? "active" : ""}" data-lang="${escapeHtml(c.lang || "code")}"><code>${escapeHtml((c.src || "").replace(/\t/g, "    ").replace(/^\n+|\n+$/g, ""))}</code></pre>`).join("")}
+          </div>`)
       : "";
-    const videoLink = video
-      ? `<a class="ps-sol-video" href="${escapeHtml(typeof video === "string" ? video : video.link)}" target="_blank" rel="noopener">▶ ${escapeHtml(typeof video === "string" ? "Watch walkthrough" : (video.name || "Watch walkthrough"))}</a>`
+
+    const refsBlock = refs.length
+      ? section("🔗", "References", `<div class="ps-sol-refs">${refs.map((r) => {
+          const link = typeof r === "string" ? r : r.link;
+          const name = typeof r === "string" ? "Watch walkthrough" : (r.name || "Reference");
+          const isVid = /youtube\.com|youtu\.be|vimeo/.test(link || "");
+          return `<a class="ps-sol-ref ${isVid ? "vid" : ""}" href="${escapeHtml(link)}" target="_blank" rel="noopener">${isVid ? "▶" : "🔗"} ${escapeHtml(name)}</a>`;
+        }).join("")}</div>`)
       : "";
-    const solution = (a || codeBlock || videoLink)
-      ? `<details class="ps-sol"><summary>💡 Solution</summary>
-           <div class="ps-sol-body">${a ? renderMarkdownish(a) : ""}${codeBlock}${videoLink}</div>
+
+    const hasSolution = approachBlock || codeBlock || refsBlock;
+    const solution = hasSolution
+      ? `<details class="ps-sol"><summary><span class="ps-sol-toggle-label">💡 Reveal solution</span></summary>
+           <div class="ps-sol-body">${approachBlock}${codeBlock}${refsBlock}</div>
          </details>`
-      : "";
+      : `<div class="ps-empty">Try it yourself first — solution coming soon.</div>`;
+
     return `<details class="ps-qa-item ps-practice ps-animate-in" style="--i:${idx}">
-        <summary><span class="ps-practice-num">${idx + 1}</span>${escapeHtml(q)}</summary>
-        <div class="ps-practice-body">${solution || `<div class="ps-empty">Try it yourself first — solution coming soon.</div>`}</div>
+        <summary><span class="ps-practice-num">${idx + 1}</span><span class="ps-practice-q">${escapeHtml(q)}</span></summary>
+        <div class="ps-practice-body">${solution}</div>
       </details>`;
   }
 
@@ -661,6 +681,28 @@
         state.topicSubTab = el.dataset.subtab;
         render();
         break;
+      case "switch-code-lang": {
+        // Client-side tab switch — no re-render, keeps solution scroll position.
+        e.preventDefault();
+        const wrap = el.closest(".ps-sol-code");
+        if (wrap) {
+          const lang = el.dataset.lang;
+          wrap.querySelectorAll(".ps-sol-tab").forEach((t) => t.classList.toggle("active", t.dataset.lang === lang));
+          wrap.querySelectorAll(".ps-sol-panel").forEach((p) => p.classList.toggle("active", p.dataset.lang === lang));
+        }
+        break;
+      }
+      case "copy-code": {
+        e.preventDefault();
+        const panel = el.closest(".ps-sol-code")?.querySelector(".ps-sol-panel.active code");
+        if (panel && navigator.clipboard) {
+          navigator.clipboard.writeText(panel.textContent).then(() => {
+            const prev = el.textContent; el.textContent = "✓ Copied";
+            setTimeout(() => { el.textContent = prev; }, 1400);
+          });
+        }
+        break;
+      }
       case "change-tab":
         state.activeTab = el.dataset.tab;
         if (el.dataset.tab !== "roadmap") state.selectedTopicId = state.selectedTopicId; // keep topic when returning

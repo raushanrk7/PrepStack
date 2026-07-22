@@ -517,32 +517,85 @@ html, body {
 .ps-pager-pos { align-self: center; font-size: 0.78rem; color: var(--muted, #8a8fa3); white-space: nowrap; }
 @media (max-width: 640px) { .ps-pager-nav { flex-direction: column; } .ps-pager-pos { order: -1; } }
 
-/* ---------- v3.3: practice solution (collapsible, scrollable code, video) ---------- */
-.ps-practice-body { padding: 6px 2px 2px; }
-.ps-sol { margin-top: 6px; border: 1px solid var(--border, #2a2f45); border-radius: 10px; overflow: hidden; }
+/* ---------- v3.4: practice solution — Approach / Solution / References ---------- */
+.ps-practice > summary { display: flex; align-items: flex-start; gap: 10px; }
+.ps-practice-q { flex: 1; min-width: 0; }
+.ps-practice-body { padding: 10px 2px 4px; }
+
+.ps-sol { margin-top: 4px; border: 1px solid var(--border, #2a2f45); border-radius: 12px; overflow: hidden; }
 .ps-sol > summary {
-  cursor: pointer; padding: 9px 12px; font-weight: 600; font-size: 0.9rem;
-  background: color-mix(in srgb, var(--accent, #7c6cff) 10%, transparent);
-  list-style: none; user-select: none;
+  cursor: pointer; padding: 11px 14px; font-weight: 600; font-size: 0.9rem;
+  background: color-mix(in srgb, var(--accent, #7c6cff) 12%, transparent);
+  list-style: none; user-select: none; transition: background 0.15s ease;
 }
+.ps-sol > summary:hover { background: color-mix(in srgb, var(--accent, #7c6cff) 18%, transparent); }
 .ps-sol > summary::-webkit-details-marker { display: none; }
+.ps-sol[open] > summary .ps-sol-toggle-label::before { content: "🔽 "; }
+.ps-sol:not([open]) > summary .ps-sol-toggle-label::before { content: "▶️ "; }
 .ps-sol[open] > summary { border-bottom: 1px solid var(--border, #2a2f45); }
-.ps-sol-body { padding: 10px 12px; }
-.ps-sol-code { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
-.ps-sol-lang { flex: 1 1 320px; min-width: 0; }
-.ps-sol-lang-tag {
-  display: inline-block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--muted, #8a8fa3); margin-bottom: 4px;
+.ps-sol-body { padding: 4px 0 0; }
+
+/* labeled sections */
+.ps-sol-section { padding: 14px; border-bottom: 1px solid color-mix(in srgb, var(--border, #2a2f45) 60%, transparent); }
+.ps-sol-section:last-child { border-bottom: 0; }
+.ps-sol-head {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--accent, #7c6cff); margin-bottom: 8px;
 }
-.ps-sol-pre {
-  margin: 0; max-height: 340px; overflow: auto;               /* scrollable, capped height */
-  background: var(--code-bg, #0e1120); border: 1px solid var(--border, #2a2f45);
-  border-radius: 8px; padding: 12px; font-size: 0.82rem; line-height: 1.5;
+.ps-sol-content { font-size: 0.9rem; line-height: 1.6; }
+.ps-sol-content p:first-child { margin-top: 0; }
+.ps-sol-content p:last-child { margin-bottom: 0; }
+
+/* code with language tabs + copy */
+.ps-sol-code { border: 1px solid var(--border, #2a2f45); border-radius: 10px; overflow: hidden; }
+.ps-sol-tabs {
+  display: flex; align-items: center; gap: 4px; padding: 6px 8px;
+  background: color-mix(in srgb, var(--border, #2a2f45) 35%, transparent);
+  border-bottom: 1px solid var(--border, #2a2f45);
 }
-.ps-sol-pre code { white-space: pre; font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
-.ps-sol-video {
-  display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
-  padding: 7px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
-  color: #fff; background: #c0392b; text-decoration: none;
+.ps-sol-tab {
+  font: inherit; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+  padding: 5px 12px; border-radius: 7px; border: 1px solid transparent;
+  background: transparent; color: var(--muted, #8a8fa3); transition: all 0.14s ease;
 }
-.ps-sol-video:hover { background: #a93226; }
+.ps-sol-tab:hover { color: var(--fg, #e6e8f0); }
+.ps-sol-tab.active {
+  background: var(--card, #1a1e30); color: var(--fg, #e6e8f0);
+  border-color: var(--border, #2a2f45);
+}
+.ps-sol-copy {
+  margin-left: auto; font: inherit; font-size: 0.75rem; cursor: pointer;
+  padding: 5px 10px; border-radius: 7px; border: 1px solid var(--border, #2a2f45);
+  background: transparent; color: var(--muted, #8a8fa3); transition: all 0.14s ease;
+}
+.ps-sol-copy:hover { color: var(--fg, #e6e8f0); border-color: var(--accent, #7c6cff); }
+.ps-sol-panel {
+  display: none; margin: 0; max-height: 420px; overflow: auto;   /* scrollable, capped */
+  background: var(--code-bg, #0e1120); padding: 14px 16px;
+  font-size: 0.82rem; line-height: 1.6; tab-size: 4;
+}
+.ps-sol-panel.active { display: block; }
+.ps-sol-panel code {
+  white-space: pre; font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
+}
+.ps-sol-panel::-webkit-scrollbar { height: 9px; width: 9px; }
+.ps-sol-panel::-webkit-scrollbar-thumb { background: var(--border, #2a2f45); border-radius: 6px; }
+
+/* references */
+.ps-sol-refs { display: flex; flex-wrap: wrap; gap: 8px; }
+.ps-sol-ref {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 13px; border-radius: 8px; font-size: 0.84rem; font-weight: 600;
+  text-decoration: none; border: 1px solid var(--border, #2a2f45); color: var(--fg, #e6e8f0);
+  transition: transform 0.14s ease, border-color 0.14s ease;
+}
+.ps-sol-ref:hover { transform: translateY(-1px); border-color: var(--accent, #7c6cff); }
+.ps-sol-ref.vid { color: #fff; background: #c0392b; border-color: #c0392b; }
+.ps-sol-ref.vid:hover { background: #a93226; }
+
+@media (max-width: 600px) {
+  .ps-sol-section { padding: 12px 10px; }
+  .ps-sol-panel { font-size: 0.78rem; padding: 12px; }
+  .ps-sol-refs { flex-direction: column; }
+  .ps-sol-ref { justify-content: center; }
+}
