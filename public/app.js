@@ -353,7 +353,7 @@
       body = `
         <div class="ps-modal-actions" style="margin-bottom:1rem">
           <button class="ps-btn ps-btn-primary" data-action="new-note-for-topic" data-topic="${topic.id}">＋ Add note</button>
-          <button class="ps-btn" data-action="ask-claude-topic" data-topic="${topic.id}">🤖 Ask Claude</button>
+          <button class="ps-btn" data-action="ask-claude-topic" data-topic="${topic.id}">🤖 Ask ${escapeHtml(PrepStackAI.getProviderLabels()[PrepStackAI.getActiveProvider()] || "AI")}</button>
         </div>
         ${myNotes.length ? `<div class="ps-note-cards">${myNotes.map(renderNoteCard).join("")}</div>` : `<div class="ps-empty">No notes for this topic yet.</div>`}`;
     }
@@ -569,7 +569,7 @@
     const msgs = PrepStackAI.getMessages();
     el.innerHTML = `
       <div class="ps-ai-header">
-        <span>🤖 AI Tutor</span>
+        <span>🤖 AI Tutor · ${escapeHtml(PrepStackAI.getProviderLabels()[PrepStackAI.getActiveProvider()] || "")}</span>
         <button class="ps-icon-btn" data-action="close-ai-panel">✕</button>
       </div>
       <div class="ps-ai-messages" id="ai-messages">
