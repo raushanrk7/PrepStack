@@ -433,14 +433,29 @@
   function renderResourcesTab() {
     const list = (RESOURCES[state.trackKey] || []).slice();
     if (list.length === 0) return `<div class="ps-empty">No track-level resources yet. Check each topic's Resources tab.</div>`;
-    return `<div class="ps-resources ps-animate-in">${list
-      .map((r) => `
-      <a class="ps-resource-card kind-${r.type || r.kind}" href="${escapeHtml(r.link || r.url)}" target="_blank" rel="noopener">
+    // Group by category; uncategorized items go under "General".
+    const groups = new Map();
+    list.forEach((r) => {
+      const cat = r.category || "General";
+      if (!groups.has(cat)) groups.set(cat, []);
+      groups.get(cat).push(r);
+    });
+    const card = (r, i) => `
+      <a class="ps-resource-card kind-${r.type || r.kind} ps-animate-in" style="--i:${i}" href="${escapeHtml(r.link || r.url)}" target="_blank" rel="noopener">
         <span class="ps-resource-icon">${KIND_ICON[r.type || r.kind] || "🔗"}</span>
-        <span class="ps-resource-title">${escapeHtml(r.name || r.title)}</span>
+        <span class="ps-resource-main">
+          <span class="ps-resource-title">${escapeHtml(r.name || r.title)}</span>
+          ${r.desc ? `<span class="ps-resource-desc">${escapeHtml(r.desc)}</span>` : ""}
+        </span>
         <span class="ps-resource-kind">${escapeHtml(r.by || r.type || r.kind || "")}</span>
-      </a>`)
-      .join("")}</div>`;
+      </a>`;
+    return [...groups.entries()]
+      .map(([cat, items]) => `
+        <section class="ps-resource-group">
+          <h3 class="ps-resource-group-title">${escapeHtml(cat)}</h3>
+          <div class="ps-resources">${items.map(card).join("")}</div>
+        </section>`)
+      .join("");
   }
 
   // ---------- modals ----------

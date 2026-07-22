@@ -483,3 +483,15 @@ html, body {
 
 .md-table-wrap { overflow-x: auto; }
 .ps-btn-done { background: color-mix(in srgb, var(--success) 15%, var(--surface)); border-color: var(--success); color: var(--success); font-weight: 600; }
+
+/* ---------- v3.1: grouped track-level resources (famous sheets) ---------- */
+.ps-resource-group { margin-bottom: 22px; }
+.ps-resource-group-title {
+  font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted, #8a8fa3); margin: 0 0 10px 2px;
+}
+.ps-resource-card { align-items: flex-start; }
+.ps-resource-main { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+.ps-resource-desc {
+  font-size: 0.8rem; line-height: 1.4; color: var(--muted, #8a8fa3); font-weight: 400;
+}
