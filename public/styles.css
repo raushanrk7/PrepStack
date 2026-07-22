@@ -387,3 +387,6 @@ html, body {
   #ai-panel { width: 100%; }
   .ps-header-controls { width: 100%; justify-content: flex-start; }
 }
+
+.ps-hint { font-size: 0.8rem; color: var(--muted, #888); margin: -0.4rem 0 0.6rem; }
+.ps-field select { width: 100%; padding: 0.5rem; border-radius: 6px; }

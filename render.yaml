@@ -6,5 +6,12 @@ services:
     buildCommand: npm install
     startCommand: npm start
     envVars:
-      - key: ANTHROPIC_API_KEY
+      # Set only the keys you have — the app exposes whichever providers are configured.
+      - key: ANTHROPIC_API_KEY   # Claude (paid)
+        sync: false
+      - key: GEMINI_API_KEY      # Google Gemini (free tier: aistudio.google.com)
+        sync: false
+      - key: GROQ_API_KEY        # Groq (free tier: console.groq.com)
+        sync: false
+      - key: OPENAI_API_KEY      # ChatGPT (paid)
         sync: false

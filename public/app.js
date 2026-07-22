@@ -467,12 +467,30 @@
           <button class="ps-btn" data-action="new-profile">＋ New profile</button>
 
           <h3>AI Tutor (${PrepStackAI.getMode()})</h3>
-          <label class="ps-field">Anthropic API key (used only if no server proxy is available)
-            <input type="password" data-action="set-api-key" value="${escapeHtml(settings.apiKey || "")}" placeholder="sk-ant-…" />
+          ${(() => {
+            const labels = PrepStackAI.getProviderLabels();
+            const defaults = PrepStackAI.getDefaultModels();
+            const providers = PrepStackAI.getProviders();
+            const active = PrepStackAI.getActiveProvider();
+            const opts = providers
+              .map((p) => `<option value="${p}" ${p === active ? "selected" : ""}>${escapeHtml(labels[p] || p)}</option>`)
+              .join("");
+            const note =
+              PrepStackAI.getMode() === "proxy"
+                ? "Providers with a key configured on the server."
+                : "Providers you can call directly from the browser (ChatGPT needs the server proxy).";
+            return `
+          <label class="ps-field">Provider
+            <select data-action="set-provider">${opts}</select>
+          </label>
+          <p class="ps-hint">${note}</p>
+          <label class="ps-field">API key (used only if no server proxy is available)
+            <input type="password" data-action="set-api-key" value="${escapeHtml(settings.apiKey || "")}" placeholder="sk-… / AIza… / gsk_…" />
           </label>
           <label class="ps-field">Model
-            <input type="text" data-action="set-model" value="${escapeHtml(settings.model || "claude-sonnet-5")}" />
-          </label>
+            <input type="text" data-action="set-model" value="${escapeHtml(settings.model || defaults[active] || "")}" placeholder="${escapeHtml(defaults[active] || "")}" />
+          </label>`;
+          })()}
 
           <h3>Data</h3>
           <div class="ps-modal-actions">
@@ -706,6 +724,9 @@
       PrepStackAI.refreshStatus();
     } else if (action === "set-model") {
       PrepStackAI.setSettings({ model: el.value });
+    } else if (action === "set-provider") {
+      PrepStackAI.setProvider(el.value);
+      render(); // refresh modal so model placeholder/default updates
     } else if (action === "select-notes-week") {
       state.weekIndex = +el.value;
       render();
