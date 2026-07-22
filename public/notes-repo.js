@@ -53,6 +53,8 @@
       trackKey: note.trackKey,
       weekIndex: note.weekIndex,
       dayIndex: note.dayIndex ?? null,
+      topicId: note.topicId ?? null,
+      topicTitle: note.topicTitle ?? null,
       title: note.title || "",
       body: note.body || "",
       tags: note.tags || [],
@@ -128,15 +130,17 @@
   };
 
   window.NoteFactory = {
-    manual({ trackKey, weekIndex, dayIndex, title, body, tags, pinned }) {
-      return { source: "manual", trackKey, weekIndex, dayIndex: dayIndex ?? null, title, body, tags: tags || [], pinned: !!pinned };
+    manual({ trackKey, weekIndex, dayIndex, topicId, topicTitle, title, body, tags, pinned }) {
+      return { source: "manual", trackKey, weekIndex, dayIndex: dayIndex ?? null, topicId: topicId ?? null, topicTitle: topicTitle ?? null, title, body, tags: tags || [], pinned: !!pinned };
     },
-    fromAIMessage({ trackKey, weekIndex, dayIndex, question, answer, model }) {
+    fromAIMessage({ trackKey, weekIndex, dayIndex, topicId, topicTitle, question, answer, model }) {
       return {
         source: "ai",
         trackKey,
         weekIndex,
         dayIndex: dayIndex ?? null,
+        topicId: topicId ?? null,
+        topicTitle: topicTitle ?? null,
         title: question ? question.slice(0, 80) : "AI note",
         body: answer || "",
         tags: ["ai"],

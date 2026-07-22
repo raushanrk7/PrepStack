@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PrepStack — Interview Prep Planner</title>
   <meta name="description" content="A personal interview-prep planner: structured roadmap, curated recall-grade notes, design drills, and an optional AI tutor." />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
   <div id="app"></div>
@@ -20,16 +20,16 @@
   <script src="notes-repo.js"></script>
   <script src="claude.js?v=3"></script>
 
-  <!-- Data registry, then content that self-registers into it -->
-  <script src="data/index.js?v=2"></script>
+  <!-- Data registry + topic-model engine, then content that self-registers into it -->
+  <script src="data/index.js?v=3"></script>
 
-  <script src="data/tracks/dsa.js"></script>
-  <script src="data/tracks/hld.js?v=2"></script>
-  <script src="data/tracks/lld.js"></script>
+  <script src="data/tracks/dsa.js?v=3"></script>
+  <script src="data/tracks/hld.js?v=3"></script>
+  <script src="data/tracks/lld.js?v=3"></script>
   <script src="data/tracks/aiml.js"></script>
   <script src="data/tracks/agents.js"></script>
   <script src="data/tracks/algotrading.js"></script>
-  <script src="data/tracks/cloud.js"></script>
+  <script src="data/tracks/cloud.js?v=3"></script>
 
   <script src="data/resources/dsa.js"></script>
   <script src="data/resources/hld.js"></script>
@@ -71,8 +71,13 @@
   <script src="data/notes/cloud/week2.js"></script>
   <script src="data/notes/cloud/week3.js"></script>
 
+  <!-- Per-week study plans + curated video resources (flow down to topics as module fallback) -->
+  <script src="data/notes/hld/plan-videos.js"></script>
+  <script src="data/notes/lld/plan-videos.js"></script>
+  <script src="data/notes/dsa/plan-videos.js"></script>
+
   <!-- Controller (must load last). Bump ?v= on release to bust browser caches. -->
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
 
   <script>
     document.getElementById("ai-launcher").addEventListener("click", () => {
