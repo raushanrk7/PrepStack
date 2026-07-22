@@ -62,8 +62,18 @@
 
   // Which provider to use for this request. Honors the saved choice when its key
   // is available on the proxy; otherwise falls back to the first available provider.
+  // Browser-callable providers (OpenAI blocks CORS — proxy only).
+  const DIRECT_OK = ["anthropic", "gemini", "groq"];
+
+  // A personal key always wins: usage stays on the user's own quota, key never leaves the browser.
+  function usingOwnKey() {
+    const s = readSettings();
+    return !!s.apiKey && DIRECT_OK.includes(s.provider || "gemini");
+  }
+
   function activeProvider() {
     const saved = readSettings().provider;
+    if (usingOwnKey()) return saved || "gemini";
     if (mode === "proxy" && proxyProviders.length) {
       if (proxyProviders.includes(saved)) return saved;
       return proxyProviders.includes("gemini") ? "gemini" : proxyProviders[0];
@@ -156,7 +166,9 @@
 
     try {
       let text_;
-      if (mode === "proxy") {
+      if (usingOwnKey()) {
+        text_ = await callDirect(provider, settings.apiKey, payload);
+      } else if (mode === "proxy") {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "content-type": "application/json" },
@@ -200,7 +212,11 @@
     getMessages: () => messages.slice(),
     getSettings: readSettings,
     setSettings: writeSettings,
-    getProviders: () => (mode === "proxy" ? proxyProviders.slice() : Object.keys(DEFAULT_MODELS)),
+    getProviders: () => {
+      // With a personal key any browser-callable provider is selectable; otherwise proxy list.
+      if (mode === "proxy" && !readSettings().apiKey) return proxyProviders.slice();
+      return Object.keys(DEFAULT_MODELS);
+    },
     getActiveProvider: activeProvider,
     getProviderLabels: () => ({ ...PROVIDER_LABELS }),
     getDefaultModels: () => ({ ...DEFAULT_MODELS }),
