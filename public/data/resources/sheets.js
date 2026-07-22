@@ -119,4 +119,46 @@
       type: "article", by: "Refactoring Guru"
     }
   ]);
+
+  // ---------- Practice platforms + more sheets (community-shared, curated) ----------
+  R.resources("hld", [
+    {
+      category: "Practice Platforms",
+      name: "Hello Interview",
+      desc: "Free 'System Design in a Hurry' guides + AI-driven mock interviews. One of the best free SD prep sites.",
+      link: "https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction",
+      type: "practice", by: "Hello Interview"
+    },
+    {
+      category: "Practice Platforms",
+      name: "Codemia — System Design",
+      desc: "System-design practice problems with structured feedback, LeetCode-style but for architecture.",
+      link: "https://codemia.io/system-design",
+      type: "practice", by: "Codemia"
+    },
+    {
+      category: "Video Courses",
+      name: "sudoCODE — playlists",
+      desc: "Full HLD/LLD playlists (fundamentals → case studies). One of the preferred channels for depth.",
+      link: "https://www.youtube.com/@sudocode/playlists",
+      type: "video", by: "sudoCODE"
+    }
+  ]);
+
+  R.resources("dsa", [
+    {
+      category: "Famous Sheets",
+      name: "AlgoMaster 75",
+      desc: "Pattern-first 75-problem sheet grouped by technique (sliding window, two pointers…). Great for pattern recognition.",
+      link: "https://algomaster.io/practice/dsa-patterns?tab=am-75",
+      type: "practice", by: "AlgoMaster"
+    },
+    {
+      category: "Community",
+      name: "r/leetcode master resource list",
+      desc: "Community-aggregated list of prep resources. A discovery starting point — note: Reddit posts can go stale.",
+      link: "https://www.reddit.com/r/leetcode/comments/yrql9i/somebody_asked_me_to_make_this_resource_list/",
+      type: "article", by: "Reddit"
+    }
+  ]);
 })();
